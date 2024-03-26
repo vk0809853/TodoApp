@@ -3,8 +3,12 @@ import {TodoProvider} from './contexts'
 import './App.css'
 import TodoForm from './components/TodoForm'
 import TodoItem from './components/TodoItem'
+import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
+  const { logout } = useAuth0();
+  const { loginWithRedirect } = useAuth0();
+  const { user, isAuthenticated} = useAuth0();
   const [todos, setTodos] = useState([])
 
   const addTodo = (todo) => {
@@ -48,6 +52,16 @@ function App() {
     <TodoProvider value={{todos, addTodo, updateTodo, deleteTodo, toggleComplete}}>
       <div className="bg-[#172842] min-h-screen py-8">
                 <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 text-white">
+                  {
+                    isAuthenticated && <p>Welcome!! {user.name}</p> 
+                  }
+                  {
+                    isAuthenticated? <button className='mr-5 bg-orange-500 rounded-md p-2' onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
+                    Log Out
+                  </button> : <button className='mr-5 bg-green-500 rounded-md p-2' onClick={() => loginWithRedirect()}>Log In</button>
+                  }
+                
+                
                     <h1 className="text-2xl font-bold text-center mb-8 mt-2">Manage Your Todos</h1>
                     <div className="mb-4">
                         {/* Todo form goes here */} 
